@@ -1,0 +1,424 @@
+<html><head>
+<title>112桃園會考錄取分數查詢系統 - 分數查詢</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+  
+  :root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5a623;
+    --background-color: #f0f8ff;
+    --text-color: #333;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+  }
+
+  .container:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+  }
+
+  .form-group {
+    flex: 1 1 200px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-color);
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: var(--transition);
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+
+  button {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+  }
+
+  button:hover {
+    background-color: #3a7bd5;
+    transform: translateY(-2px);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+  }
+
+  th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+
+  tr:hover {
+    background-color: #f0f0f0;
+  }
+
+  #resultMessage {
+    text-align: center;
+    margin-top: 30px;
+    font-weight: 500;
+    color: var(--secondary-color);
+    font-size: 18px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 10px;
+  }
+
+  .pagination button {
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .pagination button:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  #pageInfo {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: var(--text-color);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+    }
+
+    form {
+      flex-direction: column;
+    }
+
+    .form-group {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>桃園會考錄取分數查詢</h1>
+    <form id="searchForm">
+      <div class="form-group">
+        <label for="schoolName">學校名稱：</label>
+        <input type="text" id="schoolName" name="schoolName" placeholder="輸入學校名稱">
+      </div>
+      <div class="form-group">
+        <label for="department">群別：</label>
+        <select id="department" name="department">
+          <option value="">全部</option>
+          <option value="普通科">普通科</option>
+          <option value="機械群">機械群</option>
+          <option value="動力機械群">動力機械群</option>
+          <option value="電機與電子群">電機與電子群</option>
+          <option value="化工群">化工群</option>
+          <option value="土木與建築群">土木與建築群</option>
+          <option value="商業與管理群">商業與管理群</option>
+          <option value="外語群">外語群</option>
+          <option value="設計群">設計群</option>
+          <option value="農業群">農業群</option>
+          <option value="食品群">食品群</option>
+          <option value="家政群">家政群</option>
+          <option value="餐旅群">餐旅群</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="minScore">最低分數：</label>
+        <select id="minScore" name="minScore">
+          <option value="">全部</option>
+          <option value="5A">5A以上</option>
+          <option value="4A">4A以上</option>
+          <option value="3A">3A以上</option>
+          <option value="2A">2A以上</option>
+          <option value="1A">1A以上</option>
+          <option value="5B">5B以上</option>
+          <option value="4B">4B以上</option>
+          <option value="3B">3B以上</option>
+        </select>
+      </div>
+      <button type="submit">搜尋</button>
+    </form>
+    
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>學校名稱</th>
+          <th>科別</th>
+          <th>群別</th>
+          <th>錄取標準</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 搜尋結果將在這裡動態填充 -->
+      </tbody>
+    </table>
+    <div id="resultMessage"></div>
+    <div class="pagination">
+      <button id="prevPage">上一頁</button>
+      <span id="pageInfo"></span>
+      <button id="nextPage">下一頁</button>
+    </div>
+  </div>
+
+  <script>
+    const departmentGroups = {
+      "機械群": ["機械科", "鑄造科", "板金科", "機械木模科", "配管科", "模具科", "機電科", "製圖科", "生物產業機電科", "電腦機械製圖科"],
+      "動力機械群": ["汽車科", "重機科", "飛機修護科", "動力機械科", "農業機械科", "軌道車輛科"],
+      "電機與電子群": ["資訊科", "電子科", "控制科", "電機科", "冷凍空調科", "航空電子科", "電機空調科"],
+      "化工群": ["化工科", "紡織科", "染整科"],
+      "土木與建築群": ["建築科", "土木科", "消防工程科", "空間測繪科"],
+      "商業與管理群": ["商業經營科", "國際貿易科", "會計事務科", "資料處理科", "不動產事務科", "電子商務科", "流通管理科", "農產行銷科", "航運管理科"],
+      "外語群": ["應用外語科（英文組）", "應用外語科（日文組）"],
+      "設計群": ["家具木工科", "美工科", "陶瓷工程科", "室內空間設計科", "圖文傳播科", "金屬工藝科", "家具設計科", "廣告設計科", "多媒體設計科", "多媒體應用科", "室內設計科"],
+      "農業群": ["農場經營科", "園藝科", "森林科", "野生動物保育科", "造園科", "畜產保健科"],
+      "食品群": ["食品加工科", "食品科", "水產食品科", "烘焙科"],
+      "家政群": ["家政科", "服裝科", "幼兒保育科", "美容科", "時尚模特兒科", "流行服飾科", "時尚造型科", "照顧服務科"],
+      "餐旅群": ["觀光事業科", "餐飲管理科"]
+    };
+
+    const schoolData = [
+      { name: "武陵高中", department: "普通科", group: "普通科", score: "5A7+" },
+      { name: "中壢高中", department: "普通科", group: "普通科", score: "4A1B5+" },
+      { name: "桃園高中", department: "普通科", group: "普通科", score: "3A2B6+" },
+      { name: "內壢高中", department: "普通科", group: "普通科", score: "3A2B3+" },
+      { name: "平鎮高中", department: "普通科", group: "普通科", score: "2A3B2+" },
+      { name: "南崁高中", department: "普通科", group: "普通科", score: "5B8+" },
+      { name: "永豐高中", department: "普通科", group: "普通科", score: "1A4B8+" },
+      { name: "大園高中", department: "普通科", group: "普通科", score: "1A4B6+" },
+      { name: "陽明高中", department: "普通科", group: "普通科", score: "2A3B4+" },
+      { name: "壽山高中", department: "普通科", group: "普通科", score: "1A4B2+" },
+      { name: "壽山高中", department: "廣告設計科", group: "設計群", score: "5B4+" },
+      { name: "壽山高中", department: "應用英語科", group: "外語群", score: "5B5+" },
+      { name: "壽山高中", department: "國際貿易科", group: "商業與管理群", score: "5B6+" },
+      { name: "中壢高商", department: "資料處理科", group: "商業與管理群", score: "5B4+" },
+      { name: "中壢高商", department: "國際貿易科", group: "商業與管理群", score: "5B4+" },
+      { name: "中壢高商", department: "商業經營科", group: "商業與管理群", score: "1A4B5+" },
+      { name: "中壢家商", department: "流行服飾科", group: "家政群", score: "5B2+" },
+      { name: "中壢家商", department: "商業經營科", group: "商業與管理群", score: "5B4+" },
+      { name: "中壢家商", department: "資料處理科", group: "商業與管理群", score: "5B4+" },
+      { name: "中壢家商", department: "家政科", group: "家政群", score: "5B2+" },
+      { name: "中壢家商", department: "應用英語科", group: "外語群", score: "1A4B4+" },
+      { name: "北科附工", department: "電機科", group: "電機與電子群", score: "1A4B6+" },
+      { name: "北科附工", department: "動力機械科", group: "動力機械群", score: "5B4+" },
+      { name: "北科附工", department: "汽車科", group: "動力機械群", score: "5B3+" },
+      { name: "北科附工", department: "模具科", group: "機械群", score: "5B3+" },
+      { name: "北科附工", department: "生物產業機電科", group: "機械群", score: "5B5+" },
+      { name: "北科附工", department: "電子科", group: "電機與電子群", score: "1A4B3+" },
+      { name: "北科附工", department: "農場經營科", group: "農業群", score: "5B4+" },
+      { name: "北科附工", department: "園藝科", group: "農業群", score: "5B7+" },
+      { name: "北科附工", department: "畜產保健科", group: "農業群", score: "5B7+" },
+      { name: "龍潭高中", department: "普通科", group: "普通科", score: "5B5+" },
+      { name: "龍潭高中", department: "園藝科", group: "農業群", score: "4B1C1+" },
+      { name: "龍潭高中", department: "造園科", group: "農業群", score: "4B1C1+" },
+      { name: "龍潭高中", department: "機械科", group: "機械群", score: "4B1C2+" },
+      { name: "龍潭高中", department: "畜產保健科", group: "農業群", score: "4B1C5+" },
+      { name: "龍潭高中", department: "電子科", group: "電機與電子群", score: "5B3+" },
+      { name: "楊梅高中", department: "普通科", group: "普通科", score: "5B5+" },
+      { name: "楊梅高中", department: "電子科", group: "電機與電子群", score: "5B0+" },
+      { name: "楊梅高中", department: "資訊科", group: "電機與電子群", score: "5B0+" },
+      { name: "新屋高中", department: "普通科", group: "普通科", score: "4B1C" },
+      { name: "觀音高中", department: "普通科", group: "普通科", score: "4B1C" },
+      { name: "大溪高中", department: "普通科", group: "普通科", score: "5B0+" },
+      { name: "振聲高中", department: "電子商務科", group: "商業與管理群", score: "4B1C" },
+      { name: "振聲高中", department: "多媒體設計科", group: "設計群", score: "4B1C" },
+      { name: "振聲高中", department: "觀光事業科", group: "餐旅群", score: "4B1C3+" },
+      { name: "振聲高中", department: "商業經營科", group: "商業與管理群", score: "5B0+" },
+      { name: "振聲高中", department: "資訊科", group: "電機與電子群", score: "5B1+" },
+      { name: "振聲高中", department: "應用英語科", group: "外語群", score: "5B3+" },
+      { name: "振聲高中", department: "普通科", group: "普通科", score: "5B3+" },
+      { name: "關西高中", department: "園藝科", group: "農業群", score: "4B1C" },
+      { name: "關西高中", department: "畜產保健科", group: "農業群", score: "3B2C" },
+      { name: "關西高中", department: "家政科", group: "家政群", score: "4B1C1+" }
+    ];
+
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    function displayResults(results, page = 1) {
+      const tbody = document.querySelector('#resultTable tbody');
+      const resultMessage = document.getElementById('resultMessage');
+      const pageInfo = document.getElementById('pageInfo');
+      tbody.innerHTML = '';
+
+      if (results.length === 0) {
+        resultMessage.textContent = '沒有符合條件的結果';
+        document.getElementById('resultTable').style.display = 'none';
+        document.querySelector('.pagination').style.display = 'none';
+      } else {
+        resultMessage.textContent = '';
+        document.getElementById('resultTable').style.display = 'table';
+        document.querySelector('.pagination').style.display = 'flex';
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageResults = results.slice(startIndex, endIndex);
+
+        pageResults.forEach(school => {
+          const row = tbody.insertRow();
+          row.insertCell(0).textContent = school.name;
+          row.insertCell(1).textContent = school.department;
+          row.insertCell(2).textContent = school.group;
+          row.insertCell(3).textContent = school.score;
+        });
+
+        pageInfo.textContent = `第 ${page} 頁，共 ${Math.ceil(results.length / itemsPerPage)} 頁`;
+      }
+    }
+
+    function compareScores(schoolScore, minScore) {
+      const scoreMap = { '5A': 11, '4A': 10, '3A': 9, '2A': 8, '1A': 7, '5B': 6, '4B': 5, '3B': 4, '2B': 3, '1B': 2, '5C': 1 };
+      const schoolScoreValue = scoreMap[schoolScore.substring(0, 2)] || 0;
+      const minScoreValue = scoreMap[minScore] || 0;
+      return schoolScoreValue >= minScoreValue;
+    }
+
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const schoolName = document.getElementById('schoolName').value.toLowerCase();
+      const department = document.getElementById('department').value;
+      const minScore = document.getElementById('minScore').value;
+
+      const filteredData = schoolData.filter(school => {
+        return (
+          (schoolName === '' || school.name.toLowerCase().includes(schoolName)) &&
+          (department === '' || school.group === department) &&
+          (minScore === '' || compareScores(school.score, minScore))
+        );
+      });
+
+      currentPage = 1;
+      displayResults(filteredData, currentPage);
+    });
+
+    document.getElementById('prevPage').addEventListener('click', function() {
+      if (currentPage > 1) {
+        currentPage--;
+        const filteredData = performSearch();
+        displayResults(filteredData, currentPage);
+      }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', function() {
+      const filteredData = performSearch();
+      if (currentPage < Math.ceil(filteredData.length / itemsPerPage)) {
+        currentPage++;
+        displayResults(filteredData, currentPage);
+      }
+    });
+
+    function performSearch() {
+      const schoolName = document.getElementById('schoolName').value.toLowerCase();
+      const department = document.getElementById('department').value;
+      const minScore = document.getElementById('minScore').value;
+
+      return schoolData.filter(school => {
+        return (
+          (schoolName === '' || school.name.toLowerCase().includes(schoolName)) &&
+          (department === '' || school.group === department) &&
+          (minScore === '' || compareScores(school.score, minScore))
+        );
+      });
+    }
+
+    // 初始顯示所有結果
+    displayResults(schoolData, currentPage);
+  </script>
+</body></html>
