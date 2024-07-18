@@ -519,9 +519,9 @@
     toggleViewButton.addEventListener('click', function() {
       document.body.classList.toggle('mobile-view');
       if (document.body.classList.contains('mobile-view')) {
-        this.textContent = '電腦';
+        this.textContent = '💻';
       } else {
-        this.textContent = '手機';
+        this.textContent = '📱';
       }
       const filteredData = performSearch();
       displayResults(filteredData, currentPage);
