@@ -529,5 +529,13 @@
 
     // 初始顯示所有結果
     displayResults(schoolData, currentPage);
+            // 防止右鍵菜單
+        window.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+        });
   </script>
 </body></html>
