@@ -25,12 +25,95 @@
         line-height: 1.6;
         color: var(--text-color);
         background-color: var(--background-color);
-        padding: 40px 20px;
+        padding-top: 60px; /* 為固定的頁首留出空間 */
         min-height: 100vh;
         display: flex;
         flex-direction: column;
       }
     
+      /* 頁首樣式 */
+      header {
+        background-color: var(--primary-color);
+        padding: 10px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+      }
+
+      .logo {
+        color: white;
+        font-size: 1.2em;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+      }
+
+      .nav-links a:hover {
+        color: var(--secondary-color);
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+
+      /* 手機版樣式 */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background-color: var(--primary-color);
+          padding: 10px 0;
+        }
+
+        .nav-links.active a {
+          padding: 10px 20px;
+        }
+
+        .nav-links.active a:hover {
+          background-color: rgba(255,255,255,0.1);
+        }
+      }
+
+      /* 其他樣式保持不變 */
       .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -222,7 +305,7 @@
     
       #toggleView {
         position: fixed;
-        top: 20px;
+        bottom: 20px;
         right: 20px;
         z-index: 1000;
         background-color: var(--primary-color);
@@ -284,90 +367,6 @@
           margin-bottom: 15px;
         }
       }
-
-
- /* 頁首樣式 */
- header {
-        background-color: var(--primary-color);
-        padding: 10px 0;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-      }
-
-      nav {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-      }
-
-      .logo {
-        color: white;
-        font-size: 1.2em;
-        font-weight: 700;
-        text-decoration: none;
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 20px;
-      }
-
-      .nav-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: var(--transition);
-      }
-
-      .nav-links a:hover {
-        color: var(--secondary-color);
-      }
-
-      .menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5em;
-        cursor: pointer;
-      }
-
-      /* 手機版樣式 */
-      @media (max-width: 768px) {
-        .nav-links {
-          display: none;
-        }
-
-        .menu-toggle {
-          display: block;
-        }
-
-        .nav-links.active {
-          display: flex;
-          flex-direction: column;
-          position: absolute;
-          top: 100%;
-          left: 0;
-          width: 100%;
-          background-color: var(--primary-color);
-          padding: 10px 0;
-        }
-
-        .nav-links.active a {
-          padding: 10px 20px;
-        }
-
-        .nav-links.active a:hover {
-          background-color: rgba(255,255,255,0.1);
-        }
-      }
-
     </style>
     </head>
     <body>
@@ -384,6 +383,7 @@
               </button>
             </nav>
         </header>
+
 
 
       <button id="toggleView">📱</button>
