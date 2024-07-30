@@ -286,45 +286,88 @@
       }
 
 
-        /* 新增頁首樣式 */
-  header {
-    background-color: var(--primary-color);
-    padding: 20px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
+ /* 頁首樣式 */
+ header {
+        background-color: var(--primary-color);
+        padding: 10px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
 
-  nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+      }
 
-  .logo {
-    color: white;
-    font-size: 1.5em;
-    font-weight: 700;
-    text-decoration: none;
-  }
+      .logo {
+        color: white;
+        font-size: 1.2em;
+        font-weight: 700;
+        text-decoration: none;
+      }
 
-  .nav-links {
-    display: flex;
-    gap: 20px;
-  }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
 
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-  }
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+      }
 
-  .nav-links a:hover {
-    color: var(--secondary-color);
-  }
+      .nav-links a:hover {
+        color: var(--secondary-color);
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+
+      /* 手機版樣式 */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background-color: var(--primary-color);
+          padding: 10px 0;
+        }
+
+        .nav-links.active a {
+          padding: 10px 20px;
+        }
+
+        .nav-links.active a:hover {
+          background-color: rgba(255,255,255,0.1);
+        }
+      }
+
     </style>
     </head>
     <body>
@@ -336,8 +379,12 @@
                 <a href="https://tyctw.github.io/">落點分析系統</a>
                 <a href="https://tyctw.github.io/Navigation/">更多資訊</a>
               </div>
+              <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+              </button>
             </nav>
-          </header>
+        </header>
+
 
       <button id="toggleView">📱</button>
       <div class="container fade-in">
@@ -590,5 +637,12 @@
             document.addEventListener('selectstart', function (e) {
                 e.preventDefault();
             });
+                    // 手機版菜單切換
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+        });
       </script>
     </body></html>
