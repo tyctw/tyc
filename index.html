@@ -1,4 +1,4 @@
-<html><head><base href="https://tyctw.github.io/tyc/"><title>112桃園會考錄取分數查詢系統 - 分數查詢</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+<html><head><title>112桃園會考錄取分數查詢系統 - 分數查詢</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
       
       :root {
@@ -28,67 +28,11 @@
         line-height: 1.6;
         color: var(--text-color);
         background-color: var(--background-color);
-        padding-top: 60px;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
       }
     
-      header {
-        background-color: var(--header-bg);
-        padding: 10px 0;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-      }
-
-      nav {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-      }
-
-      .logo {
-        color: var(--header-text);
-        font-size: 1.2em;
-        font-weight: 700;
-        text-decoration: none;
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 10px;
-      }
-
-      .nav-links a {
-        color: var(--nav-button-text);
-        text-decoration: none;
-        font-weight: 500;
-        transition: var(--transition);
-        background-color: var(--nav-button-bg);
-        padding: 8px 15px;
-        border-radius: 5px;
-      }
-
-      .nav-links a:hover {
-        background-color: var(--nav-button-hover-bg);
-        color: var(--nav-button-hover-text);
-      }
-
-      .menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: var(--header-text);
-        font-size: 1.5em;
-        cursor: pointer;
-      }
-
       .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -386,44 +330,6 @@
 
       /* 手機版樣式 */
       @media (max-width: 768px) {
-        body {
-          padding-top: 70px;
-        }
-
-        header {
-          padding: 10px 0;
-        }
-
-        .logo {
-          font-size: 1em;
-        }
-
-        .nav-links {
-          display: none;
-          flex-direction: column;
-          position: absolute;
-          top: 100%;
-          left: 0;
-          width: 100%;
-          background-color: var(--header-bg);
-          padding: 10px 0;
-          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-links.active {
-          display: flex;
-        }
-
-        .nav-links a {
-          padding: 10px 20px;
-          width: 100%;
-          text-align: center;
-        }
-
-        .menu-toggle {
-          display: block;
-        }
-
         .container {
           padding: 20px;
         }
@@ -508,22 +414,114 @@
           font-size: 14px;
         }
       }
+
+      /* 頁首樣式 */
+      header {
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        padding: 20px 0;
+        text-align: center;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      nav ul {
+        list-style-type: none;
+        display: flex;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--header-text);
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      nav ul li a:hover {
+        background-color: var(--nav-button-hover-bg);
+        color: var(--nav-button-hover-text);
+      }
+
+      /* 手機版選單樣式 */
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--header-text);
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        nav {
+          width: 100%;
+          display: none;
+        }
+
+        nav.active {
+          display: block;
+        }
+
+        nav ul {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        nav ul li {
+          margin: 10px 0;
+        }
+
+        nav ul li a {
+          display: block;
+          padding: 10px;
+          text-align: left;
+        }
+
+        .menu-toggle {
+          display: block;
+          position: absolute;
+          top: 20px;
+          right: 20px;
+        }
+      }
     </style>
     </head>
     <body>
-        <header>
-            <nav>
-              <a href="https://tyctw.github.io/tyc/" class="logo">桃園會考錄取分數查詢</a>
-              <div class="nav-links">
-                <a href="https://sites.google.com/view/tyctw/">回到主網頁</a>
-                <a href="https://tyctw.github.io/">落點分析系統</a>
-                <a href="https://tyctw.github.io/Navigation/">更多資訊</a>
-              </div>
-              <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-              </button>
-            </nav>
-        </header>
+      <header>
+        <div class="header-content">
+          <div class="logo">桃園會考錄取分數查詢系統</div>
+          <button class="menu-toggle">☰</button>
+          <nav>
+            <ul>
+              <li><a href="index.html">首頁</a></li>
+              <li><a href="search.html">分數查詢</a></li>
+              <li><a href="about.html">關於我們</a></li>
+              <li><a href="contact.html">聯絡我們</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
 
       <button id="toggleView">📱</button>
       <div class="container fade-in">
@@ -705,14 +703,6 @@
           e.preventDefault();
         });
 
-        // 手機版菜單切換
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-
-        menuToggle.addEventListener('click', function() {
-          navLinks.classList.toggle('active');
-        });
-
         // 初始化頁面
         document.addEventListener('DOMContentLoaded', function() {
           const loadingOverlay = document.querySelector('.loading-overlay');
@@ -755,5 +745,13 @@
           document.body.classList.add('mobile-view');
           toggleViewButton.textContent = '💻';
         }
+
+        // 手機版選單切換
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('nav');
+
+        menuToggle.addEventListener('click', function() {
+          nav.classList.toggle('active');
+        });
       </script>
     </body></html>
