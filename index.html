@@ -120,6 +120,23 @@
     color: var(--primary-color);
   }
 
+  .desktop-menu-button {
+    display: none;
+    background-color: var(--nav-button-bg);
+    color: var(--nav-button-text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    transition: var(--transition);
+  }
+
+  .desktop-menu-button:hover {
+    background-color: var(--nav-button-hover-bg);
+    color: var(--nav-button-hover-text);
+  }
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -708,6 +725,38 @@
       transform: rotate(180deg);
     }
   }
+
+  @media (min-width: 769px) {
+    .desktop-menu-button {
+      display: block;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: var(--menu-bg);
+      padding: 20px;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .nav-links.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-links a {
+      padding: 10px 20px;
+      width: 100%;
+      text-align: left;
+    }
+  }
 </style>
 </head>
 <body>
@@ -725,6 +774,7 @@
             <span></span>
             <span></span>
           </button>
+          <button class="desktop-menu-button">選單</button>
         </nav>
     </header>
 
@@ -926,9 +976,15 @@
       navLinks.classList.toggle('active');
     });
 
-    // 點擊菜單外區域關閉菜單
+    const desktopMenuButton = document.querySelector('.desktop-menu-button');
+
+    desktopMenuButton.addEventListener('click', function() {
+      navLinks.classList.toggle('active');
+    });
+
+    // 更新現有的點擊事件監聽器
     document.addEventListener('click', function(e) {
-      if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
+      if (!menuToggle.contains(e.target) && !navLinks.contains(e.target) && !desktopMenuButton.contains(e.target)) {
         menuToggle.classList.remove('open');
         navLinks.classList.remove('active');
       }
@@ -971,11 +1027,11 @@
       }
     });
 
-
-        // 初始化時檢查螢幕大小
-        if (window.innerWidth <= 768) {
-          document.body.classList.add('mobile-view');
-          toggleViewButton.textContent = '💻';
-        }
-      </script>
-    </body></html>
+    // 初始化時檢查螢幕大小
+    if (window.innerWidth <= 768) {
+      document.body.classList.add('mobile-view');
+      toggleViewButton.textContent = '💻';
+    }
+  </script>
+</body>
+</html>
