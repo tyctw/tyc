@@ -71,70 +71,97 @@
   }
 
   .nav-links {
+    background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+
+  .nav-links.active {
     display: flex;
-    gap: 20px;
   }
 
   .nav-links a {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding: 15px 30px;
+    width: auto;
     color: var(--nav-button-text);
     text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-    padding: 8px 15px;
-    border-radius: 5px;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
   }
 
-  .nav-links a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--nav-button-hover-bg);
-    transition: var(--transition);
-    z-index: -1;
+  .nav-links.active a {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  .nav-links a:hover::before {
-    left: 0;
+  .nav-links.active a:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .nav-links.active a:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+
+  .nav-links.active a:nth-child(3) {
+    transition-delay: 0.3s;
   }
 
   .nav-links a:hover {
-    color: var(--nav-button-hover-text);
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--nav-button-hover-text);
+    transition: all 0.3s ease;
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .menu-toggle, .desktop-menu-button {
+    z-index: 2001;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: var(--header-text);
+    transition: all 0.3s ease;
   }
 
   .menu-toggle {
     display: none;
-    background: none;
-    border: none;
-    color: var(--header-text);
-    font-size: 1.5em;
-    cursor: pointer;
-    transition: var(--transition);
   }
 
   .menu-toggle:hover {
-    color: var(--primary-color);
+    transform: rotate(90deg);
   }
 
-  .desktop-menu-button {
-    display: none;
-    background-color: var(--nav-button-bg);
-    color: var(--nav-button-text);
-    border: none;
-    padding: 10px 20px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 16px;
-    transition: var(--transition);
-  }
-
-  .desktop-menu-button:hover {
-    background-color: var(--nav-button-hover-bg);
-    color: var(--nav-button-hover-text);
+  .menu-toggle.open {
+    transform: rotate(180deg);
   }
 
   .container {
@@ -460,7 +487,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--menu-bg);
+      background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
       padding: 20px;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
       z-index: 2000;
@@ -478,6 +505,25 @@
       text-align: center;
       font-size: 1.2em;
       margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .nav-links.active a {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .nav-links.active a:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+
+    .nav-links.active a:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+
+    .nav-links.active a:nth-child(3) {
+      transition-delay: 0.3s;
     }
 
     .menu-toggle {
@@ -569,194 +615,6 @@
       font-size: 14px;
     }
   }
-
-  /* 新增菜單開啟特效 */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .nav-links.active {
-    animation: slideIn 0.3s ease-out forwards;
-  }
-
-  .nav-links a {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .nav-links.active a {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .nav-links.active a:nth-child(1) {
-    transition-delay: 0.1s;
-  }
-
-  .nav-links.active a:nth-child(2) {
-    transition-delay: 0.2s;
-  }
-
-  .nav-links.active a:nth-child(3) {
-    transition-delay: 0.3s;
-  }
-
-  /* 菜單切換按鈕樣式 */
-  .menu-toggle {
-    z-index: 2001;
-    position: relative;
-    width: 30px;
-    height: 22px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .menu-toggle span {
-    display: block;
-    position: absolute;
-    height: 3px;
-    width: 100%;
-    background: var(--header-text);
-    border-radius: 3px;
-    opacity: 1;
-    left: 0;
-    transform: rotate(0deg);
-    transition: .25s ease-in-out;
-  }
-
-  .menu-toggle span:nth-child(1) {
-    top: 0px;
-  }
-
-  .menu-toggle span:nth-child(2),
-  .menu-toggle span:nth-child(3) {
-    top: 9px;
-  }
-
-  .menu-toggle span:nth-child(4) {
-    top: 18px;
-  }
-
-  .menu-toggle.open span:nth-child(1) {
-    top: 9px;
-    width: 0%;
-    left: 50%;
-  }
-
-  .menu-toggle.open span:nth-child(2) {
-    transform: rotate(45deg);
-  }
-
-  .menu-toggle.open span:nth-child(3) {
-    transform: rotate(-45deg);
-  }
-
-  .menu-toggle.open span:nth-child(4) {
-    top: 9px;
-    width: 0%;
-    left: 50%;
-  }
-
-  /* 美化菜單樣式 */
-  .nav-links {
-    background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
-  }
-
-  .nav-links a {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s ease;
-  }
-
-  .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background-color: var(--nav-button-hover-text);
-    transition: all 0.3s ease;
-  }
-
-  .nav-links a:hover::after {
-    width: 100%;
-    left: 0;
-  }
-
-  @media (max-width: 768px) {
-    .nav-links {
-      justify-content: flex-start;
-      padding-top: 80px;
-    }
-
-    .nav-links a {
-      margin-bottom: 20px;
-      font-size: 1.4em;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .menu-toggle {
-      transition: all 0.3s ease;
-    }
-
-    .menu-toggle:hover {
-      transform: rotate(90deg);
-    }
-
-    .menu-toggle.open {
-      transform: rotate(180deg);
-    }
-  }
-
-  @media (min-width: 769px) {
-    .desktop-menu-button {
-      display: block;
-    }
-
-    .menu-toggle {
-      display: none;
-    }
-
-    .nav-links {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: var(--menu-bg);
-      padding: 20px;
-      border-radius: 0 0 var(--border-radius) var(--border-radius);
-      box-shadow: var(--box-shadow);
-    }
-
-    .nav-links.active {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .nav-links a {
-      padding: 10px 20px;
-      width: 100%;
-      text-align: left;
-    }
-  }
 </style>
 </head>
 <body>
@@ -764,8 +622,8 @@
         <nav>
           <a href="https://tyctw.github.io/tyc/" class="logo">桃園會考錄取分數查詢</a>
           <div class="nav-links">
-            <a href="https://sites.google.com/view/tyctw/">回到主網頁</a>
-            <a href="https://tyctw.github.io/">落點分析系統</a>
+            <a href="https://sites.google.com/view/tyctw/">回主網頁</a>
+            <a href="https://tyctw.github.io/">落點分析</a>
             <a href="https://tyctw.github.io/Navigation/">更多資訊</a>
           </div>
           <button class="menu-toggle">
@@ -971,23 +829,31 @@
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
 
-    menuToggle.addEventListener('click', function() {
-      this.classList.toggle('open');
+    function toggleMenu() {
+      menuToggle.classList.toggle('open');
       navLinks.classList.toggle('active');
-    });
+      document.body.classList.toggle('menu-open');
+    }
 
+    menuToggle.addEventListener('click', toggleMenu);
     const desktopMenuButton = document.querySelector('.desktop-menu-button');
 
-    desktopMenuButton.addEventListener('click', function() {
-      navLinks.classList.toggle('active');
-    });
+    desktopMenuButton.addEventListener('click', toggleMenu);
 
-    // 更新現有的點擊事件監聽器
+    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       if (!menuToggle.contains(e.target) && !navLinks.contains(e.target) && !desktopMenuButton.contains(e.target)) {
         menuToggle.classList.remove('open');
         navLinks.classList.remove('active');
+        document.body.classList.remove('menu-open');
       }
+    });
+
+    // Close menu when clicking a menu item
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        toggleMenu();
+      });
     });
 
     // 初始化頁面
