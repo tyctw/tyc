@@ -68,20 +68,22 @@ nav {
 
 .nav-links {
   background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
-  display: none;
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100%;
+  right: -300px; 
+  width: 300px;
   height: 100%;
+  transition: right 0.3s ease;
+  z-index: 2000;
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  z-index: 2000;
+  align-items: flex-start;
+  padding: 20px;
 }
 
 .nav-links.active {
-  display: flex;
+  right: 0;
 }
 
 .nav-links a {
@@ -97,23 +99,12 @@ nav {
   transition: all 0.3s ease;
   opacity: 0;
   transform: translateY(20px);
+  position: relative;
 }
 
 .nav-links.active a {
   opacity: 1;
   transform: translateY(0);
-}
-
-.nav-links.active a:nth-child(1) {
-  transition-delay: 0.1s;
-}
-
-.nav-links.active a:nth-child(2) {
-  transition-delay: 0.2s;
-}
-
-.nav-links.active a:nth-child(3) {
-  transition-delay: 0.3s;
 }
 
 .nav-links a:hover {
@@ -461,7 +452,6 @@ footer {
   animation: fadeOut 0.5s ease-out forwards;
 }
 
-/* 手機版樣式 */
 @media (max-width: 768px) {
   body {
     padding-top: 70px;
@@ -476,23 +466,23 @@ footer {
   }
 
   .nav-links {
-    display: none;
-    flex-direction: column;
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    right: -100%;
+    width: 75%;
     height: 100%;
-    background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
     padding: 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, var(--menu-bg), var(--header-bg));
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
     z-index: 2000;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .nav-links.active {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    transition: right 0.3s ease;
+  }
+  .nav-links.active {
+    right: 0;
   }
 
   .nav-links a {
@@ -508,18 +498,6 @@ footer {
   .nav-links.active a {
     opacity: 1;
     transform: translateY(0);
-  }
-
-  .nav-links.active a:nth-child(1) {
-    transition-delay: 0.1s;
-  }
-
-  .nav-links.active a:nth-child(2) {
-    transition-delay: 0.2s;
-  }
-
-  .nav-links.active a:nth-child(3) {
-    transition-delay: 0.3s;
   }
 
   .menu-toggle {
@@ -587,7 +565,6 @@ footer {
   }
 }
 
-/* 提升易讀性的額外樣式 */
 @media (max-width: 768px) {
   input, select, button {
     font-size: 16px;
@@ -612,7 +589,6 @@ footer {
   }
 }
 
-/* Comparison Panel styles */
 .comparison-panel {
   position: fixed;
   bottom: 20px;
@@ -665,7 +641,6 @@ footer {
   color: white;
 }
 
-/* Comparison Modal styles */
 .compare-modal {
   display: none;
   position: fixed;
