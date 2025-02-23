@@ -236,10 +236,11 @@ function updateComparisonPanel() {
 
 function openCompareModal() {
   const container = document.getElementById('compareTableContainer');
-  let html = '<table><thead><tr><th>學校名稱</th><th>群別</th><th>科系群</th><th>分數</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>學校名稱</th><th>年度</th><th>群別</th><th>科系群</th><th>分數</th></tr></thead><tbody>';
   comparisonList.forEach(school => {
     html += `<tr>
                <td>${school.name}</td>
+               <td>${school.year ? school.year : '未知'}</td>
                <td>${school.department}</td>
                <td>${school.group}</td>
                <td>${school.score}</td>
