@@ -670,10 +670,13 @@ footer {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: transparent;
+  background-color: var(--secondary-color);
+  color: white;
   border: none;
   font-size: 24px;
   cursor: pointer;
+  border-radius: var(--border-radius);
+  padding: 5px 10px;
 }
 #compareTableContainer table {
   width: 100%;
@@ -688,7 +691,6 @@ footer {
   color: white;
 }
 
-/* Comparison modal columns layout */
 .compare-columns {
   display: flex;
   gap: 20px;
