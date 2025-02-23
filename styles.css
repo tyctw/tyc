@@ -687,3 +687,15 @@ footer {
   background-color: var(--primary-color);
   color: white;
 }
+
+/* Comparison modal columns layout */
+.compare-columns {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.compare-column {
+  flex: 1;
+  min-width: 300px;
+}

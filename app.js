@@ -230,9 +230,10 @@ function openCompareModal() {
     }
     groups[year].push(school);
   });
-  let html = '';
+  let html = `<div class="compare-columns">`;
   const sortedYears = Object.keys(groups).sort((a, b) => b - a);
   sortedYears.forEach(year => {
+    html += `<div class="compare-column">`;
     html += `<h3>${year}年</h3>`;
     html += '<table><thead><tr><th>學校名稱</th><th>群別</th><th>科系群</th><th>分數</th></tr></thead><tbody>';
     groups[year].forEach(school => {
@@ -243,8 +244,9 @@ function openCompareModal() {
                  <td>${school.score}</td>
                </tr>`;
     });
-    html += '</tbody></table>';
+    html += '</tbody></table></div>';
   });
+  html += `</div>`;
   container.innerHTML = html;
   document.getElementById('compareModal').classList.add('active');
 }
