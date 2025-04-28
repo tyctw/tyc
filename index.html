@@ -4,19 +4,50 @@
   <title>桃園會考歷年錄取分數查詢系統</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://tyctw.github.io/Navigation/tyctw.png">
 </head>
 <body>
   <header>
     <nav>
       <a href="https://tyctw.github.io/tyc/" class="logo">桃園會考錄取分數查詢</a>
       <div class="nav-links">
-        <a href="https://sites.google.com/view/tyctw/">回主網頁</a>
-        <a href="https://tyctw.github.io/">落點分析</a>
-        <a href="https://tyctw.github.io/Navigation/">更多資訊</a>
+        <div class="menu-header">
+          <i class="fas fa-compass"></i> 網站導覽
+        </div>
+        <div class="menu-content">
+          <a href="https://sites.google.com/view/tyctw/" style="--i:0">
+            <i class="fas fa-home"></i>
+            <span>回主網頁</span>
+            <i class="fas fa-chevron-right arrow"></i>
+          </a>
+          <a href="https://tyctw.github.io/" style="--i:1">
+            <i class="fas fa-chart-line"></i>
+            <span>落點分析</span>
+            <i class="fas fa-chevron-right arrow"></i>
+          </a>
+          <a href="https://tyctw.github.io/Navigation/" style="--i:2">
+            <i class="fas fa-info-circle"></i>
+            <span>更多資訊</span>
+            <i class="fas fa-chevron-right arrow"></i>
+          </a>
+          <a href="#" style="--i:3">
+            <i class="fas fa-question-circle"></i>
+            <span>常見問題</span>
+            <i class="fas fa-chevron-right arrow"></i>
+          </a>
+          <a href="#" style="--i:4">
+            <i class="fas fa-newspaper"></i>
+            <span>最新公告</span>
+            <i class="fas fa-chevron-right arrow"></i>
+          </a>
+        </div>
       </div>
-      <button class="menu-toggle">
+      <div class="menu-backdrop"></div>
+      <button class="menu-toggle" aria-label="開啟選單">
         <span></span>
         <span></span>
         <span></span>
@@ -26,7 +57,7 @@
     </nav>
   </header>
 
-  <button id="toggleView">📱</button>
+  <button id="toggleView" title="切換檢視模式">📱</button>
   <div class="container fade-in">
     <h1>桃園會考錄取分數查詢</h1>
     <form id="searchForm">
@@ -76,15 +107,15 @@
           <option value="3B">3B以上</option>
         </select>
       </div>
-      <button type="submit">搜尋</button>
+      <button type="submit"><span>搜尋</span></button>
     </form>
     
     <div id="resultContainer"></div>
     <div id="resultMessage"></div>
     <div class="pagination">
-      <button id="prevPage">上一頁</button>
+      <button id="prevPage"><span>上一頁</span></button>
       <span id="pageInfo"></span>
-      <button id="nextPage">下一頁</button>
+      <button id="nextPage"><span>下一頁</span></button>
     </div>
   </div>
 
@@ -108,8 +139,8 @@
   <!-- Comparison Panel -->
   <div id="comparisonPanel" class="comparison-panel">
     <span>已選擇學校：<span id="comparisonCount">0</span></span>
-    <button id="compareButton" disabled>開始比較</button>
-    <button id="clearComparison">清除</button>
+    <button id="compareButton" disabled><span>開始比較</span></button>
+    <button id="clearComparison"><span>清除</span></button>
   </div>
 
   <!-- Comparison Modal -->
