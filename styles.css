@@ -1565,11 +1565,13 @@ footer > div {
   align-items: center;
   gap: 12px;
   transition: all 0.3s ease;
+  user-select: none;
 }
 
 .faq-question i {
   font-size: 0.8em;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .faq-question:hover {
@@ -1578,11 +1580,12 @@ footer > div {
 
 .faq-answer {
   padding: 0;
-  max-height: 0;
+  height: 0;
   overflow: hidden;
   transition: all 0.3s ease;
   line-height: 1.8;
   color: var(--text-muted);
+  opacity: 0;
 }
 
 .faq-item.active .faq-question {
@@ -1595,7 +1598,38 @@ footer > div {
 
 .faq-item.active .faq-answer {
   padding: 20px;
-  max-height: 500px;
+  height: auto;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+    max-height: 80vh;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .faq-container {
+    gap: 15px;
+  }
+
+  .faq-question {
+    padding: 15px;
+    font-size: 0.95em;
+  }
+
+  .faq-answer {
+    font-size: 0.9em;
+  }
+
+  .faq-item.active .faq-answer {
+    padding: 15px;
+  }
 }
 
 /* 最新公告樣式 */
