@@ -34,12 +34,12 @@
             <span>更多資訊</span>
             <i class="fas fa-chevron-right arrow"></i>
           </a>
-          <a href="#" style="--i:3">
+          <a href="#" class="faq-link" style="--i:3">
             <i class="fas fa-question-circle"></i>
             <span>常見問題</span>
             <i class="fas fa-chevron-right arrow"></i>
           </a>
-          <a href="#" style="--i:4">
+          <a href="#" class="news-link" style="--i:4">
             <i class="fas fa-newspaper"></i>
             <span>最新公告</span>
             <i class="fas fa-chevron-right arrow"></i>
@@ -127,7 +127,14 @@
   <!-- 搜尋特效覆蓋層 -->
   <div class="search-overlay">
     <div class="search-spinner"></div>
-    <div class="search-message">正在搜尋中...</div>
+    <div class="search-message">
+      正在搜尋中
+      <div class="search-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </div>
 
   <!-- 載入特效覆蓋層 -->
@@ -149,6 +156,93 @@
       <button id="closeCompareModal" class="close-modal">&times;</button>
       <h2>比較學校結果</h2>
       <div id="compareTableContainer"></div>
+    </div>
+  </div>
+
+  <!-- 常見問題彈窗 -->
+  <div id="faqModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h2><i class="fas fa-question-circle"></i> 常見問題</h2>
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">
+            <i class="fas fa-chevron-right"></i>
+            如何使用本查詢系統？
+          </div>
+          <div class="faq-answer">
+            1. 選擇欲查詢的年度<br>
+            2. 輸入學校名稱（可選）<br>
+            3. 選擇群別（可選）<br>
+            4. 選擇最低分數門檻（可選）<br>
+            5. 點擊搜尋按鈕即可查看結果
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <i class="fas fa-chevron-right"></i>
+            分數顯示的意義是什麼？
+          </div>
+          <div class="faq-answer">
+            - 5A 表示會考成績為「精熟」5科<br>
+            - 4A1B 表示「精熟」4科、「基礎」1科<br>
+            - 數字後的加號（+）表示超過該分數<br>
+            - C 表示「待加強」
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <i class="fas fa-chevron-right"></i>
+            如何比較不同學校的成績？
+          </div>
+          <div class="faq-answer">
+            1. 在搜尋結果中點擊學校卡片右上角的「+」按鈕<br>
+            2. 可以選擇多所學校進行比較<br>
+            3. 點擊下方比較面板的「開始比較」按鈕<br>
+            4. 系統會顯示所選學校的詳細比較資訊
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <i class="fas fa-chevron-right"></i>
+            資料多久更新一次？
+          </div>
+          <div class="faq-answer">
+            本系統的資料會在每年會考放榜後立即更新，確保資料的即時性和準確性。若發現任何資料有誤，歡迎聯繫我們修正。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最新公告彈窗 -->
+  <div id="newsModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h2><i class="fas fa-newspaper"></i> 最新公告</h2>
+      <div class="news-container">
+        <div class="news-item">
+          <div class="news-date">2024/03/20</div>
+          <div class="news-title">113年會考落點分析系統上線</div>
+          <div class="news-content">
+            新年度的會考落點分析系統已經上線，提供最新的落點分析功能，歡迎使用！
+          </div>
+        </div>
+        <div class="news-item">
+          <div class="news-date">2024/03/15</div>
+          <div class="news-title">系統介面更新</div>
+          <div class="news-content">
+            為提供更好的使用體驗，我們更新了系統介面，新增了更多便利的功能。
+          </div>
+        </div>
+        <div class="news-item">
+          <div class="news-date">2024/03/10</div>
+          <div class="news-title">資料更新通知</div>
+          <div class="news-content">
+            系統資料庫已更新，包含最新的112學年度各校錄取分數資訊。
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

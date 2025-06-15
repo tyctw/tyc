@@ -74,7 +74,6 @@ function displayResults(results, page = 1) {
           </div>
           <div class="school-score">
             <div class="score-icon"><i class="fas fa-chart-line"></i></div>
-            <span>錄取分數：</span>${school.score}
             <span class="score-badge ${scoreClass}">${school.score}</span>
           </div>
         </div>
@@ -394,3 +393,57 @@ function openCompareModal() {
   container.innerHTML = html;
   modal.classList.add('active');
 }
+
+// 彈窗控制
+document.querySelector('.faq-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('faqModal').classList.add('active');
+});
+
+document.querySelector('.news-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('newsModal').classList.add('active');
+});
+
+// 關閉彈窗
+document.querySelectorAll('.modal .close-modal').forEach(button => {
+  button.addEventListener('click', () => {
+    button.closest('.modal').classList.remove('active');
+  });
+});
+
+// 點擊彈窗外部關閉
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
+});
+
+// 常見問題展開/收起
+document.querySelectorAll('.faq-question').forEach(question => {
+  question.addEventListener('click', () => {
+    const faqItem = question.closest('.faq-item');
+    const wasActive = faqItem.classList.contains('active');
+    
+    // 關閉其他已展開的問題
+    document.querySelectorAll('.faq-item.active').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    // 如果點擊的不是當前展開的問題，則展開它
+    if (!wasActive) {
+      faqItem.classList.add('active');
+    }
+  });
+});
+
+// 按 ESC 鍵關閉彈窗
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.active').forEach(modal => {
+      modal.classList.remove('active');
+    });
+  }
+});
