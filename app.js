@@ -1,449 +1,165 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbSorTsWogiV_bXRXl5_YYyDufLtCvtMc-ARAL-QNd7SnL25mI09i0U6azal-RhR8hnA/exec';
-let currentPage = 1;
+const $ = (selector) => document.querySelector(selector);
 const itemsPerPage = 10;
+let currentPage = 1;
 let allResults = [];
 let comparisonList = [];
+let requestController;
+let activeFilters = { year: '113', schoolName: '', department: '', minScore: '' };
+const schoolIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-6 9 6M5 10v10h14V10M2 20h20M9 20v-6h6v6M10 9h4M12 4V1l5 1-5 2"/><path d="M7 12h1m8 0h1"/></svg>';
+const schoolKey = (school) => JSON.stringify([school.name, school.department, school.group, school.year]);
+const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 
-// 科系對應的類別和圖標
-const departmentTypes = {
-  "普通科": { class: "department-normal", icon: "fa-book" },
-  "機械群": { class: "department-mechanical", icon: "fa-cogs" },
-  "動力機械群": { class: "department-power", icon: "fa-car" },
-  "電機與電子群": { class: "department-electrical", icon: "fa-bolt" },
-  "化工群": { class: "department-chemical", icon: "fa-flask" },
-  "土木與建築群": { class: "department-civil", icon: "fa-building" },
-  "商業與管理群": { class: "department-business", icon: "fa-briefcase" },
-  "外語群": { class: "department-language", icon: "fa-language" },
-  "設計群": { class: "department-design", icon: "fa-palette" },
-  "農業群": { class: "department-agriculture", icon: "fa-leaf" },
-  "食品群": { class: "department-food", icon: "fa-utensils" },
-  "家政群": { class: "department-home", icon: "fa-home" },
-  "餐旅群": { class: "department-hospitality", icon: "fa-concierge-bell" }
-};
-
-// 分數對應的樣式
-function getScoreClass(score) {
-  if (score.includes('5A')) return 'score-a5';
-  if (score.includes('4A')) return 'score-a4';
-  if (score.includes('3A')) return 'score-a3';
-  if (score.includes('2A') || score.includes('1A')) return 'score-a2';
-  if (score.includes('B')) return 'score-b5';
-  return '';
+function displayResults() {
+  const container = $('#resultContainer');
+  container.replaceChildren();
+  $('#resultCount').textContent = allResults.length;
+  const filters = [`${activeFilters.year} 學年度`, activeFilters.department || '全部群別'];
+  if (activeFilters.schoolName) filters.push(`「${activeFilters.schoolName}」`);
+  if (activeFilters.minScore) filters.push(`${activeFilters.minScore} 以上`);
+  $('#resultSummary').textContent = `${filters.join(' · ')}，共 ${allResults.length} 筆錄取資料`;
+  $('#resultMessage').textContent = allResults.length ? '' : '找不到符合條件的學校，試試調整篩選條件。';
+  $('.pagination').hidden = !allResults.length;
+  $('.table-heading').hidden = !allResults.length;
+  const start = (currentPage - 1) * itemsPerPage;
+  allResults.slice(start, start + itemsPerPage).forEach((school) => {
+    const selected = comparisonList.some((item) => schoolKey(item) === schoolKey(school));
+    const card = document.createElement('article');
+    card.className = 'school-row';
+    card.innerHTML = `<div class="school-main"><span class="school-icon">${schoolIcon}</span><div><div class="school-name">${escapeHTML(school.name)}</div><div class="school-course">${escapeHTML(school.group)} <span aria-hidden="true">·</span> ${escapeHTML(school.year || activeFilters.year)} 學年度</div></div></div><span class="school-group">${escapeHTML(school.department)}</span><div class="school-score"><span class="score-badge${/^[45]A/.test(String(school.score)) ? ' score-high' : ''}">${escapeHTML(school.score)}</span></div><button class="compare-toggle${selected ? ' selected' : ''}" aria-pressed="${selected}" aria-label="${selected ? '移除比較' : '加入比較'}：${escapeHTML(school.name)} ${escapeHTML(school.group)}">${selected ? '✓' : '+'}</button>`;
+    card.querySelector('button').addEventListener('click', () => {
+      const index = comparisonList.findIndex((item) => schoolKey(item) === schoolKey(school));
+      if (index === -1) comparisonList.push(school);
+      else comparisonList.splice(index, 1);
+      updateComparisonPanel();
+      const button = card.querySelector('button');
+      const nowSelected = index === -1;
+      button.classList.toggle('selected', nowSelected);
+      button.textContent = nowSelected ? '✓' : '+';
+      button.setAttribute('aria-pressed', String(nowSelected));
+      button.setAttribute('aria-label', `${nowSelected ? '移除比較' : '加入比較'}：${school.name} ${school.group}`);
+    });
+    container.append(card);
+  });
+  $('#pageInfo').textContent = `${currentPage} / ${Math.max(1, Math.ceil(allResults.length / itemsPerPage))}`;
+  $('#resultRange').textContent = `顯示 ${start + 1}–${Math.min(start + itemsPerPage, allResults.length)} 筆，共 ${allResults.length} 筆`;
+  $('#prevPage').disabled = currentPage <= 1;
+  $('#nextPage').disabled = currentPage * itemsPerPage >= allResults.length;
 }
 
-function displayResults(results, page = 1) {
-  const resultContainer = document.getElementById('resultContainer');
-  const resultMessage = document.getElementById('resultMessage');
-  const pageInfo = document.getElementById('pageInfo');
-  resultContainer.innerHTML = '';
-
-  if (results.length === 0) {
-    resultMessage.textContent = '沒有符合條件的結果';
-    document.querySelector('.pagination').style.display = 'none';
-  } else {
-    resultMessage.textContent = '';
-    document.querySelector('.pagination').style.display = 'flex';
-
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const pageResults = results.slice(startIndex, endIndex);
-
-    pageResults.forEach((school, index) => {
-      const card = document.createElement('div');
-      card.classList.add('card');
-      card.style.animationDelay = `${index * 0.1}s`;
-      card.style.opacity = '0';
-
-      const uniqueId = school.name + '-' + school.department + '-' + school.group + '-' + school.year;
-      const isSelected = comparisonList.some(s => (s.name + '-' + s.department + '-' + s.group + '-' + s.year) === uniqueId);
-      
-      // 獲取科系樣式
-      const deptInfo = departmentTypes[school.department] || { class: "", icon: "fa-graduation-cap" };
-      const scoreClass = getScoreClass(school.score);
-
-      card.innerHTML = `
-        <div class="school-name">${school.name}</div>
-        <div class="school-info">
-          <div class="school-department ${deptInfo.class}">
-            <div class="department-icon"><i class="fas ${deptInfo.icon}"></i></div>
-            <span>${school.department}</span>
-          </div>
-          <div class="school-group">
-            <div class="group-icon"><i class="fas fa-tags"></i></div>
-            <span>${school.group}</span>
-          </div>
-          <div class="school-score">
-            <div class="score-icon"><i class="fas fa-chart-line"></i></div>
-            <span class="score-badge ${scoreClass}">${school.score}</span>
-          </div>
-        </div>
-        <button class="compare-toggle ${isSelected ? 'selected' : ''}">${isSelected ? '✓' : '+'}</button>
-      `;
-
-      const compareBtn = card.querySelector('.compare-toggle');
-      compareBtn.addEventListener('click', () => {
-        const uniqueId = school.name + '-' + school.department + '-' + school.group + '-' + school.year;
-        const idx = comparisonList.findIndex(s => (s.name + '-' + s.department + '-' + s.group + '-' + s.year) === uniqueId);
-        if (idx === -1) {
-          comparisonList.push(school);
-          compareBtn.textContent = '✓';
-          compareBtn.classList.add('selected');
-        } else {
-          comparisonList.splice(idx, 1);
-          compareBtn.textContent = '+';
-          compareBtn.classList.remove('selected');
-        }
-        updateComparisonPanel();
-      });
-
-      resultContainer.appendChild(card);
-      
-      // 淡入動畫效果
-      setTimeout(() => {
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-      }, 50 + (index * 100));
-    });
-
-    updatePaginationButtons();
-    pageInfo.textContent = `第 ${page} 頁，共 ${Math.ceil(results.length / itemsPerPage)} 頁`;
+async function searchSchools() {
+  requestController?.abort();
+  const controller = new AbortController();
+  requestController = controller;
+  const filters = Object.fromEntries(new FormData($('#searchForm')));
+  filters.schoolName = filters.schoolName.trim();
+  const params = new URLSearchParams({ action: 'search', ...filters });
+  const submit = $('.search-button');
+  let timedOut = false;
+  const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 25000);
+  submit.disabled = true;
+  submit.innerHTML = '<span class="spinner"></span> 正在查詢…';
+  $('.results-panel').setAttribute('aria-busy', 'true');
+  $('#resultContainer').replaceChildren();
+  $('#resultCount').textContent = '—';
+  $('#resultSummary').textContent = `正在查詢 ${filters.year} 學年度資料`;
+  $('.pagination').hidden = true;
+  $('.table-heading').hidden = true;
+  $('#resultMessage').innerHTML = '<span class="spinner"></span> 正在載入學校資料…';
+  try {
+    const response = await fetch(`${SCRIPT_URL}?${params}`, { signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data)) throw new Error('資料格式錯誤');
+    allResults = data.map((school) => ({ ...school, year: String(school.year || filters.year) }));
+    activeFilters = filters;
+    currentPage = 1;
+    displayResults();
+  } catch (error) {
+    if (error.name === 'AbortError' && !timedOut) return;
+    allResults = [];
+    $('#resultSummary').textContent = '暫時無法取得錄取資料';
+    $('#resultMessage').replaceChildren();
+    const message = document.createElement('p');
+    message.textContent = timedOut ? '連線逾時，請稍後重新查詢。' : '載入資料時發生錯誤，請確認網路連線後重試。';
+    const retry = document.createElement('button');
+    retry.className = 'primary-button';
+    retry.textContent = '重新載入';
+    retry.addEventListener('click', searchSchools);
+    $('#resultMessage').append(message, retry);
+  } finally {
+    clearTimeout(timeout);
+    if (requestController === controller) {
+      submit.disabled = false;
+      submit.innerHTML = '<span aria-hidden="true">⌕</span> 查詢錄取分數 <span aria-hidden="true">→</span>';
+      $('.results-panel').setAttribute('aria-busy', 'false');
+    }
   }
 }
 
-function updatePaginationButtons() {
-  const prevButton = document.getElementById('prevPage');
-  const nextButton = document.getElementById('nextPage');
-  
-  prevButton.disabled = currentPage <= 1;
-  nextButton.disabled = currentPage >= Math.ceil(allResults.length / itemsPerPage);
+$('#searchForm').addEventListener('submit', (event) => { event.preventDefault(); searchSchools(); });
+$('#resetFilters').addEventListener('click', () => { $('#searchForm').reset(); searchSchools(); });
+for (const [id, direction] of [['prevPage', -1], ['nextPage', 1]]) {
+  $(`#${id}`).addEventListener('click', () => {
+    currentPage += direction;
+    displayResults();
+    $('.results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
-
-document.getElementById('searchForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const year = document.getElementById('year').value;
-  const schoolName = document.getElementById('schoolName').value;
-  const department = document.getElementById('department').value;
-  const minScore = document.getElementById('minScore').value;
-
-  const searchOverlay = document.querySelector('.search-overlay');
-  searchOverlay.classList.add('active');
-
-  const url = `${SCRIPT_URL}?action=search&year=${encodeURIComponent(year)}&schoolName=${encodeURIComponent(schoolName)}&department=${encodeURIComponent(department)}&minScore=${encodeURIComponent(minScore)}`;
-
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      allResults = data;
-      currentPage = 1;
-      displayResults(allResults, currentPage);
-      searchOverlay.classList.remove('active');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('resultMessage').textContent = '搜尋時發生錯誤，請稍後再試。';
-      searchOverlay.classList.remove('active');
-    });
-});
-
-document.getElementById('prevPage').addEventListener('click', function() {
-  if (currentPage > 1) {
-    currentPage--;
-    displayResults(allResults, currentPage);
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-});
-
-document.getElementById('nextPage').addEventListener('click', function() {
-  if (currentPage < Math.ceil(allResults.length / itemsPerPage)) {
-    currentPage++;
-    displayResults(allResults, currentPage);
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-});
-
-const toggleViewButton = document.getElementById('toggleView');
-toggleViewButton.addEventListener('click', function() {
-  document.body.classList.toggle('mobile-view');
-  if (document.body.classList.contains('mobile-view')) {
-    this.textContent = '💻';
-    this.title = '切換到桌面版';
-  } else {
-    this.textContent = '📱';
-    this.title = '切換到行動版';
-  }
-  displayResults(allResults, currentPage);
-});
-
-window.addEventListener('contextmenu', function (e) {
-  e.preventDefault();
-});
-
-document.addEventListener('selectstart', function (e) {
-  e.preventDefault();
-});
-
-const menuToggle = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('.nav-links');
-const menuBackdrop = document.querySelector('.menu-backdrop');
-let isMenuOpen = false;
-
-function toggleMenu() {
-  isMenuOpen = !isMenuOpen;
-  menuToggle.classList.toggle('open');
-  navLinks.classList.toggle('active');
-  menuBackdrop.classList.toggle('active');
-  document.body.classList.toggle('menu-open');
-  
-  const menuLinks = document.querySelectorAll('.nav-links .menu-content a');
-  
-  if (isMenuOpen) {
-    // 菜單項動畫
-    menuLinks.forEach((link, index) => {
-      link.style.transitionDelay = `${0.1 + (index * 0.08)}s`;
-    });
-  } else {
-    // 重置延遲
-    menuLinks.forEach(link => {
-      link.style.transitionDelay = '0s';
-    });
-  }
-}
-
-menuToggle.addEventListener('click', toggleMenu);
-const desktopMenuButton = document.querySelector('.desktop-menu-button');
-
-desktopMenuButton.addEventListener('click', toggleMenu);
-
-menuBackdrop.addEventListener('click', () => {
-  if (isMenuOpen) {
-    toggleMenu();
-  }
-});
-
-// 鍵盤支持
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && isMenuOpen) {
-    toggleMenu();
-  }
-});
-
-// 為菜單項添加滑動效果
-const menuItems = document.querySelectorAll('.nav-links .menu-content a');
-menuItems.forEach(item => {
-  item.addEventListener('mouseover', function() {
-    const arrow = this.querySelector('.arrow');
-    if (arrow) {
-      arrow.style.opacity = '1';
-      arrow.style.transform = 'translateX(0)';
+for (const [id, grid] of [['listView', false], ['gridView', true]]) {
+  $(`#${id}`).addEventListener('click', () => {
+    $('.results-panel').classList.toggle('grid-mode', grid);
+    for (const button of document.querySelectorAll('.view-options button')) {
+      const active = button.id === id;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
     }
   });
-  
-  item.addEventListener('mouseout', function() {
-    const arrow = this.querySelector('.arrow');
-    if (arrow) {
-      arrow.style.opacity = '0';
-      arrow.style.transform = 'translateX(-10px)';
-    }
-  });
-  
-  // 點擊菜單項關閉菜單
-  item.addEventListener('click', function() {
-    if (isMenuOpen) {
-      toggleMenu();
-    }
-  });
-});
-
-document.addEventListener('click', function(e) {
-  if (isMenuOpen &&
-      !menuToggle.contains(e.target) && 
-      !navLinks.contains(e.target) && 
-      !desktopMenuButton.contains(e.target) && 
-      !e.target.classList.contains('menu-backdrop')) {
-    toggleMenu();
-  }
-});
-
-// 添加跳動動畫
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
-`;
-document.head.appendChild(style);
-
-document.addEventListener('DOMContentLoaded', function() {
-  const loadingOverlay = document.querySelector('.loading-overlay');
-
-  fetch(`${SCRIPT_URL}?action=getAll&year=113`)
-    .then(response => response.json())
-    .then(data => {
-      allResults = data;
-      displayResults(allResults, currentPage);
-      setTimeout(() => {
-        loadingOverlay.style.opacity = '0';
-        loadingOverlay.style.pointerEvents = 'none';
-        setTimeout(() => {
-          loadingOverlay.style.display = 'none';
-        }, 500);
-      }, 800);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('resultMessage').textContent = '載入資料時發生錯誤，請稍後再試。';
-      setTimeout(() => {
-        loadingOverlay.style.opacity = '0';
-        loadingOverlay.style.pointerEvents = 'none';
-        setTimeout(() => {
-          loadingOverlay.style.display = 'none';
-        }, 500);
-      }, 800);
-    });
-
-  document.getElementById('compareButton').addEventListener('click', () => {
-    openCompareModal();
-  });
-
-  document.getElementById('clearComparison').addEventListener('click', () => {
-    comparisonList = [];
-    updateComparisonPanel();
-    document.querySelectorAll('.compare-toggle.selected').forEach(btn => {
-      btn.textContent = '+';
-      btn.classList.remove('selected');
-    });
-  });
-
-  document.getElementById('closeCompareModal').addEventListener('click', () => {
-    document.getElementById('compareModal').classList.remove('active');
-  });
-
-  document.getElementById('compareModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('compareModal')) {
-      document.getElementById('compareModal').classList.remove('active');
-    }
-  });
-});
-
-window.addEventListener('resize', function() {
-  if (window.innerWidth <= 768) {
-    document.body.classList.add('mobile-view');
-    toggleViewButton.textContent = '💻';
-    toggleViewButton.title = '切換到桌面版';
-  } else {
-    document.body.classList.remove('mobile-view');
-    toggleViewButton.textContent = '📱';
-    toggleViewButton.title = '切換到行動版';
-  }
-});
-
-if (window.innerWidth <= 768) {
-  document.body.classList.add('mobile-view');
-  toggleViewButton.textContent = '💻';
-  toggleViewButton.title = '切換到桌面版';
 }
-
 function updateComparisonPanel() {
-  const comparisonPanel = document.getElementById('comparisonPanel');
-  const countSpan = document.getElementById('comparisonCount');
-  countSpan.textContent = comparisonList.length;
-  const compareButton = document.getElementById('compareButton');
-  compareButton.disabled = comparisonList.length < 2;
-  
-  if (comparisonList.length > 0) {
-    comparisonPanel.classList.add('active');
-  } else {
-    comparisonPanel.classList.remove('active');
-  }
+  $('#comparisonPanel').hidden = !comparisonList.length;
+  $('#comparisonCount').textContent = comparisonList.length;
+  $('#compareButton').disabled = comparisonList.length < 2;
+  document.body.style.paddingBottom = comparisonList.length ? '80px' : '';
 }
-
-function openCompareModal() {
-  const container = document.getElementById('compareTableContainer');
-  const modal = document.getElementById('compareModal');
-  const groups = {};
-  comparisonList.forEach(school => {
-    const year = school.year ? school.year : '未知';
-    if (!groups[year]) {
-      groups[year] = [];
-    }
-    groups[year].push(school);
+$('#clearComparison').addEventListener('click', () => {
+  comparisonList = [];
+  updateComparisonPanel();
+  document.querySelectorAll('.compare-toggle.selected').forEach((button) => {
+    button.textContent = '+';
+    button.classList.remove('selected');
+    button.setAttribute('aria-pressed', 'false');
+    button.setAttribute('aria-label', button.getAttribute('aria-label').replace('移除比較', '加入比較'));
   });
-  let html = `<div class="compare-columns">`;
-  const sortedYears = Object.keys(groups).sort((a, b) => b - a);
-  sortedYears.forEach(year => {
-    html += `<div class="compare-column">`;
-    html += `<h3>${year}年</h3>`;
-    html += '<table><thead><tr><th>學校名稱</th><th>群別</th><th>科系群</th><th>分數</th></tr></thead><tbody>';
-    groups[year].forEach(school => {
-      const deptInfo = departmentTypes[school.department] || { class: "", icon: "fa-graduation-cap" };
-      const scoreClass = getScoreClass(school.score);
-      
-      html += `<tr>
-                 <td>${school.name}</td>
-                 <td><div class="td-with-icon ${deptInfo.class}"><i class="fas ${deptInfo.icon}"></i> ${school.department}</div></td>
-                 <td>${school.group}</td>
-                 <td><span class="score-badge ${scoreClass}">${school.score}</span></td>
-               </tr>`;
-    });
-    html += '</tbody></table></div>';
+});
+$('#compareButton').addEventListener('click', () => {
+  $('#compareTableContainer').innerHTML = `<div class="comparison-table-wrap"><table><caption>已選擇 ${comparisonList.length} 筆學校錄取資料</caption><thead><tr><th scope="col">學校名稱</th><th scope="col">年度</th><th scope="col">群別</th><th scope="col">科系</th><th scope="col">錄取分數</th></tr></thead><tbody>${comparisonList.map((school) => `<tr><td>${escapeHTML(school.name)}</td><td>${escapeHTML(school.year)}</td><td>${escapeHTML(school.department)}</td><td>${escapeHTML(school.group)}</td><td><span class="score-badge">${escapeHTML(school.score)}</span></td></tr>`).join('')}</tbody></table></div>`;
+  $('#compareModal').showModal();
+});
+document.querySelectorAll('[data-open]').forEach((button) => {
+  button.addEventListener('click', () => { closeMenu(); document.getElementById(button.dataset.open).showModal(); });
+});
+document.querySelectorAll('dialog').forEach((dialog) => {
+  dialog.querySelector('.close-modal').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const rect = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
   });
-  html += `</div>`;
-  container.innerHTML = html;
-  modal.classList.add('active');
+});
+function closeMenu() {
+  $('#navigation').classList.remove('active');
+  $('.menu-toggle').setAttribute('aria-expanded', 'false');
+  $('.menu-toggle').setAttribute('aria-label', '開啟導覽選單');
 }
-
-// 彈窗控制
-document.querySelector('.faq-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  document.getElementById('faqModal').classList.add('active');
+$('.menu-toggle').addEventListener('click', () => {
+  const open = $('#navigation').classList.toggle('active');
+  $('.menu-toggle').setAttribute('aria-expanded', String(open));
+  $('.menu-toggle').setAttribute('aria-label', open ? '關閉導覽選單' : '開啟導覽選單');
 });
+document.querySelectorAll('#navigation a').forEach((link) => link.addEventListener('click', closeMenu));
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
+searchSchools();
 
-document.querySelector('.news-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  document.getElementById('newsModal').classList.add('active');
-});
-
-// 關閉彈窗
-document.querySelectorAll('.modal .close-modal').forEach(button => {
-  button.addEventListener('click', () => {
-    button.closest('.modal').classList.remove('active');
-  });
-});
-
-// 點擊彈窗外部關閉
-document.querySelectorAll('.modal').forEach(modal => {
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('active');
-    }
-  });
-});
-
-// 常見問題展開/收起
-document.querySelectorAll('.faq-question').forEach(question => {
-  question.addEventListener('click', () => {
-    const faqItem = question.closest('.faq-item');
-    const wasActive = faqItem.classList.contains('active');
-    
-    // 關閉其他已展開的問題
-    document.querySelectorAll('.faq-item.active').forEach(item => {
-      item.classList.remove('active');
-    });
-    
-    // 如果點擊的不是當前展開的問題，則展開它
-    if (!wasActive) {
-      faqItem.classList.add('active');
-    }
-  });
-});
-
-// 按 ESC 鍵關閉彈窗
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal.active').forEach(modal => {
-      modal.classList.remove('active');
-    });
-  }
-});
+// Show the service transition notice on each page visit; historical lookup remains available.
+$('#continueHistorical').addEventListener('click', () => $('#updateNoticeModal').close());
+$('#updateNoticeModal').showModal();

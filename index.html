@@ -1,251 +1,101 @@
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>桃園會考歷年錄取分數查詢系統</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="theme-color" content="#244e43">
+  <meta name="description" content="查詢桃園歷年會考錄取分數，篩選學校與群別，並比較心目中的理想學校。">
+  <title>桃園會考 · 歷年錄取分數查詢</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/png" href="https://tyctw.github.io/Navigation/tyctw.png">
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="https://tyctw.github.io/tyc/" class="logo">桃園會考錄取分數查詢</a>
-      <div class="nav-links">
-        <div class="menu-header">
-          <i class="fas fa-compass"></i> 網站導覽
-        </div>
-        <div class="menu-content">
-          <a href="https://sites.google.com/view/tyctw/" style="--i:0">
-            <i class="fas fa-home"></i>
-            <span>回主網頁</span>
-            <i class="fas fa-chevron-right arrow"></i>
-          </a>
-          <a href="https://tyctw.github.io/" style="--i:1">
-            <i class="fas fa-chart-line"></i>
-            <span>落點分析</span>
-            <i class="fas fa-chevron-right arrow"></i>
-          </a>
-          <a href="https://tyctw.github.io/Navigation/" style="--i:2">
-            <i class="fas fa-info-circle"></i>
-            <span>更多資訊</span>
-            <i class="fas fa-chevron-right arrow"></i>
-          </a>
-          <a href="#" class="faq-link" style="--i:3">
-            <i class="fas fa-question-circle"></i>
-            <span>常見問題</span>
-            <i class="fas fa-chevron-right arrow"></i>
-          </a>
-          <a href="#" class="news-link" style="--i:4">
-            <i class="fas fa-newspaper"></i>
-            <span>最新公告</span>
-            <i class="fas fa-chevron-right arrow"></i>
-          </a>
-        </div>
+  <a class="skip-link" href="#searchForm">跳至學校查詢</a>
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="主要導覽">
+      <a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">山</span><span>桃園會考<span class="brand-divider">/</span><span class="brand-sub">升學探索指南</span></span></a>
+      <div class="nav-links" id="navigation">
+        <a class="nav-active" href="#explore">錄取分數查詢</a>
+        <a href="https://tyctw.github.io/spare/">落點分析 <span aria-hidden="true">↗</span></a>
+        <button class="text-button" data-open="faqModal">常見問題</button>
+        <a class="nav-more" href="https://tyctw.github.io/Navigation/">更多升學資訊 <span aria-hidden="true">↗</span></a>
       </div>
-      <div class="menu-backdrop"></div>
-      <button class="menu-toggle" aria-label="開啟選單">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <button class="desktop-menu-button">選單</button>
+      <button class="menu-toggle" aria-label="開啟導覽選單" aria-expanded="false" aria-controls="navigation">☰</button>
     </nav>
   </header>
-
-  <button id="toggleView" title="切換檢視模式">📱</button>
-  <div class="container fade-in">
-    <h1>桃園會考錄取分數查詢</h1>
-    <form id="searchForm">
-      <div class="form-group">
-        <label for="year">年度：</label>
-        <select id="year" name="year">
-          <option value="113">113年</option>
-          <option value="112">112年</option>
-          <option value="111">111年</option>
-          <option value="110">110年</option>
-        </select>
+  <main>
+    <section class="hero page-shell" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> YOUR NEXT CHAPTER STARTS HERE</div>
+        <h1 id="heroTitle">每一份努力，<br>都有<span class="headline-accent">嚮往的方向<svg viewBox="0 0 390 15" preserveAspectRatio="none" aria-hidden="true"><path d="M3 11 Q170 -2 385 8"/></svg></span>。</h1>
+        <p>從歷年錄取分數出發，探索適合你的學校。<br>讓選擇更有依據，讓下一步更有方向。</p>
+        <a class="hero-link" href="#explore">開始探索學校 <span aria-hidden="true">↗</span></a>
       </div>
-      <div class="form-group">
-        <label for="schoolName">學校名稱：</label>
-        <input type="text" id="schoolName" name="schoolName" placeholder="輸入學校名稱">
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-grid"></div><div class="art-orbit"></div>
+        <span class="art-star star-one">✦</span><span class="art-star star-two">✧</span>
+        <div class="floating-label label-top"><span class="tiny-dot"></span> 找到屬於你的可能</div>
+        <svg class="campus" viewBox="0 0 460 270" fill="none">
+          <ellipse cx="240" cy="245" rx="189" ry="13" fill="#e1ded1"/>
+          <path d="M32 233Q83 170 131 215Q191 163 241 218Q320 164 419 235" fill="#b6c5ad"/>
+          <path d="M66 239V149L165 112L164 239" fill="#c6d1be"/><path d="M66 149L165 112L175 125L77 162Z" fill="#416758"/>
+          <path d="M284 239V136L393 160V239" fill="#c6d1be"/><path d="M280 131L399 155L396 168L280 145Z" fill="#416758"/>
+          <path d="M143 239V117L236 61L330 117V239" fill="#f6f0dd"/><path d="M131 120L236 54L342 120L334 132L236 72L139 132Z" fill="#315a49"/>
+          <path d="M164 139H308V151H164Z" fill="#dfd5b9"/><path d="M172 155H185V231H172ZM287 155H300V231H287Z" fill="#e4d9bd"/>
+          <path d="M214 239V192A22 22 0 0 1 258 192V239" fill="#315a49"/><path d="M236 177V238" stroke="#769184" stroke-width="2"/>
+          <circle cx="236" cy="116" r="17" fill="#e6dcc1" stroke="#a6ad91" stroke-width="2"/><path d="M236 104V116L244 121" stroke="#416758" stroke-width="2" stroke-linecap="round"/>
+          <g fill="#6f8b77"><path d="M199 156H211V175H199ZM261 156H273V175H261ZM87 175H101V195H87ZM118 165H132V185H118ZM87 209H101V229H87ZM118 201H132V221H118ZM343 171H357V191H343ZM372 178H386V198H372ZM343 207H357V227H343ZM372 213H386V233H372Z"/></g>
+          <path d="M206 239H266L286 255H186Z" fill="#e6dcc1"/><path d="M199 246H274M191 252H282" stroke="#d0c4a6" stroke-width="2"/>
+          <path d="M44 236V180M410 239V194" stroke="#6f7c57" stroke-width="5"/>
+          <path d="M44 156C14 170 14 206 44 208C75 207 74 175 44 156ZM410 172C384 184 382 216 410 218C437 216 436 188 410 172Z" fill="#739274"/>
+          <path d="M236 54V23" stroke="#416758" stroke-width="3"/><path d="M238 23L265 30L238 39" fill="#cf9265"/>
+          <path d="M100 91Q109 83 118 91M119 78Q128 70 137 78" stroke="#718878" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="floating-label label-bottom"><span class="label-icon">↗</span><div>你的未來，不只一種可能<small>EXPLORE YOUR POSSIBILITIES</small></div></div>
+        <span class="art-caption">TAOYUAN · EDUCATION · FUTURE</span>
       </div>
-      <div class="form-group">
-        <label for="department">群別：</label>
-        <select id="department" name="department">
-          <option value="">全部</option>
-          <option value="學術群">學術群</option>
-          <option value="機械群">機械群</option>
-          <option value="動力機械群">動力機械群</option>
-          <option value="電機與電子群">電機與電子群</option>
-          <option value="化工群">化工群</option>
-          <option value="土木與建築群">土木與建築群</option>
-          <option value="商業與管理群">商業與管理群</option>
-          <option value="外語群">外語群</option>
-          <option value="設計群">設計群</option>
-          <option value="農業群">農業群</option>
-          <option value="食品群">食品群</option>
-          <option value="家政群">家政群</option>
-          <option value="餐旅群">餐旅群</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="minScore">最低分數：</label>
-        <select id="minScore" name="minScore">
-          <option value="">全部</option>
-          <option value="5A">5A以上</option>
-          <option value="4A">4A以上</option>
-          <option value="3A">3A以上</option>
-          <option value="2A">2A以上</option>
-          <option value="1A">1A以上</option>
-          <option value="5B">5B以上</option>
-          <option value="4B">4B以上</option>
-          <option value="3B">3B以上</option>
-        </select>
-      </div>
-      <button type="submit"><span>搜尋</span></button>
-    </form>
-    
-    <div id="resultContainer"></div>
-    <div id="resultMessage"></div>
-    <div class="pagination">
-      <button id="prevPage"><span>上一頁</span></button>
-      <span id="pageInfo"></span>
-      <button id="nextPage"><span>下一頁</span></button>
-    </div>
-  </div>
-
-  <footer>
-    <div>桃園會考錄取分數查詢系統</div>
-    <div class="copyright">&copy; 2025 TYCTW會考落點分析平台. All rights reserved.</div>
-  </footer>
-
-  <!-- 搜尋特效覆蓋層 -->
-  <div class="search-overlay">
-    <div class="search-spinner"></div>
-    <div class="search-message">
-      正在搜尋中
-      <div class="search-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 載入特效覆蓋層 -->
-  <div class="loading-overlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-message">載入中...</div>
-  </div>
-
-  <!-- Comparison Panel -->
-  <div id="comparisonPanel" class="comparison-panel">
-    <span>已選擇學校：<span id="comparisonCount">0</span></span>
-    <button id="compareButton" disabled><span>開始比較</span></button>
-    <button id="clearComparison"><span>清除</span></button>
-  </div>
-
-  <!-- Comparison Modal -->
-  <div id="compareModal" class="compare-modal">
-    <div class="compare-modal-content">
-      <button id="closeCompareModal" class="close-modal">&times;</button>
-      <h2>比較學校結果</h2>
-      <div id="compareTableContainer"></div>
-    </div>
-  </div>
-
-  <!-- 常見問題彈窗 -->
-  <div id="faqModal" class="modal">
-    <div class="modal-content">
-      <button class="close-modal">&times;</button>
-      <h2><i class="fas fa-question-circle"></i> 常見問題</h2>
-      <div class="faq-container">
-        <div class="faq-item">
-          <div class="faq-question">
-            <i class="fas fa-chevron-right"></i>
-            如何使用本查詢系統？
-          </div>
-          <div class="faq-answer">
-            1. 選擇欲查詢的年度<br>
-            2. 輸入學校名稱（可選）<br>
-            3. 選擇群別（可選）<br>
-            4. 選擇最低分數門檻（可選）<br>
-            5. 點擊搜尋按鈕即可查看結果
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question">
-            <i class="fas fa-chevron-right"></i>
-            分數顯示的意義是什麼？
-          </div>
-          <div class="faq-answer">
-            - 5A 表示會考成績為「精熟」5科<br>
-            - 4A1B 表示「精熟」4科、「基礎」1科<br>
-            - 數字後的加號（+）表示超過該分數<br>
-            - C 表示「待加強」
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question">
-            <i class="fas fa-chevron-right"></i>
-            如何比較不同學校的成績？
-          </div>
-          <div class="faq-answer">
-            1. 在搜尋結果中點擊學校卡片右上角的「+」按鈕<br>
-            2. 可以選擇多所學校進行比較<br>
-            3. 點擊下方比較面板的「開始比較」按鈕<br>
-            4. 系統會顯示所選學校的詳細比較資訊
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question">
-            <i class="fas fa-chevron-right"></i>
-            資料多久更新一次？
-          </div>
-          <div class="faq-answer">
-            本系統的資料會在每年會考放榜後立即更新，確保資料的即時性和準確性。若發現任何資料有誤，歡迎聯繫我們修正。
-          </div>
+    </section>
+    <div class="page-shell"><div class="notice"><span class="notice-icon" aria-hidden="true">i</span><p>此系統將不再更新。<span>後續請改用「會考落點分析」，本頁保留歷年錄取資料供參考。</span></p><button class="text-button" data-open="updateNoticeModal">查看系統公告 <span aria-hidden="true">↗</span></button></div></div>
+    <section class="explore page-shell" id="explore" aria-labelledby="exploreTitle">
+      <div class="section-heading"><div><div class="eyebrow section-eyebrow">FIND YOUR SCHOOL</div><h2 id="exploreTitle">探索你的理想學校<span class="heading-dot">.</span></h2></div><span class="section-note">從這裡，展開你的下一站。</span></div>
+      <div class="workspace">
+        <aside class="filter-panel">
+          <div class="filter-heading"><h3><span aria-hidden="true">☷</span> 篩選條件</h3><button id="resetFilters" class="text-button">重設</button></div>
+          <form id="searchForm">
+            <div class="form-group"><label for="year">入學年度 <span>ACADEMIC YEAR</span></label><select id="year" name="year"><option value="113">113 學年度</option><option value="112">112 學年度</option><option value="111">111 學年度</option><option value="110">110 學年度</option></select></div>
+            <div class="form-group"><label for="schoolName">學校名稱</label><div class="search-input"><span aria-hidden="true">⌕</span><input type="search" id="schoolName" name="schoolName" placeholder="輸入學校關鍵字"></div></div>
+            <div class="form-group"><label for="department">就讀群別</label><select id="department" name="department"><option value="">全部群別</option><option>學術群</option><option>機械群</option><option>動力機械群</option><option>電機與電子群</option><option>化工群</option><option>土木與建築群</option><option>商業與管理群</option><option>外語群</option><option>設計群</option><option>農業群</option><option>食品群</option><option>家政群</option><option>餐旅群</option></select></div>
+            <div class="form-group"><label for="minScore">最低分數門檻</label><select id="minScore" name="minScore"><option value="">不限分數</option><option value="5A">5A 以上</option><option value="4A">4A 以上</option><option value="3A">3A 以上</option><option value="2A">2A 以上</option><option value="1A">1A 以上</option><option value="5B">5B 以上</option><option value="4B">4B 以上</option><option value="3B">3B 以上</option></select></div>
+            <button class="primary-button search-button" type="submit"><span aria-hidden="true">⌕</span> 查詢錄取分數 <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="filter-tip"><span aria-hidden="true">✧</span><p>還沒有目標學校嗎？<small>試試選擇感興趣的群別，<br>發現更多適合你的選擇。</small></p></div>
+        </aside>
+        <div class="results-panel" aria-busy="true">
+          <div class="results-heading"><div><h3>查詢結果 <span id="resultCount">—</span></h3><p id="resultSummary">正在取得歷年錄取資料</p></div><div class="view-options" aria-label="結果檢視方式"><button class="active" id="listView" aria-label="列表檢視" aria-pressed="true">☰</button><button id="gridView" aria-label="卡片檢視" aria-pressed="false">▦</button></div></div>
+          <div class="results-hint"><span aria-hidden="true">⊕</span> 點選學校旁的「＋」，加入比較清單</div>
+          <div class="table-heading" aria-hidden="true"><span>學校 / 科系</span><span>就讀群別</span><span>錄取分數</span><span>比較</span></div>
+          <div id="resultContainer" aria-live="polite"></div>
+          <div id="resultMessage" role="status"><span class="spinner"></span> 正在載入學校資料…</div>
+          <div class="pagination" hidden><span id="resultRange"></span><div><button id="prevPage" aria-label="上一頁">←</button><span id="pageInfo"></span><button id="nextPage" aria-label="下一頁">→</button></div></div>
+          <div class="source-note"><span aria-hidden="true">ⓘ</span> 分數為歷年錄取參考，並非當年度錄取保證。</div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- 最新公告彈窗 -->
-  <div id="newsModal" class="modal">
-    <div class="modal-content">
-      <button class="close-modal">&times;</button>
-      <h2><i class="fas fa-newspaper"></i> 最新公告</h2>
-      <div class="news-container">
-        <div class="news-item">
-          <div class="news-date">2024/03/20</div>
-          <div class="news-title">113年會考落點分析系統上線</div>
-          <div class="news-content">
-            新年度的會考落點分析系統已經上線，提供最新的落點分析功能，歡迎使用！
-          </div>
-        </div>
-        <div class="news-item">
-          <div class="news-date">2024/03/15</div>
-          <div class="news-title">系統介面更新</div>
-          <div class="news-content">
-            為提供更好的使用體驗，我們更新了系統介面，新增了更多便利的功能。
-          </div>
-        </div>
-        <div class="news-item">
-          <div class="news-date">2024/03/10</div>
-          <div class="news-title">資料更新通知</div>
-          <div class="news-content">
-            系統資料庫已更新，包含最新的112學年度各校錄取分數資訊。
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+    </section>
+    <section class="next-step page-shell"><div class="next-step-icon" aria-hidden="true">↗</div><div><h3>看見分數，也看見更多可能。</h3><p>此系統將不再更新，後續請改用會考落點分析服務。</p></div><a href="https://tyctw.github.io/spare/">前往落點分析 <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="page-shell"><div><span class="footer-brand">桃園會考</span><span>陪你找到，下一個方向。</span></div><p>© 2025 TYCTW 會考落點分析平台</p><button class="text-button" data-open="faqModal">使用說明 <span aria-hidden="true">↗</span></button></footer>
+  <div id="comparisonPanel" class="comparison-panel" hidden><div><span class="comparison-symbol">▦</span> 學校比較 <span id="comparisonCount">0</span><small>選擇至少 2 個項目開始比較</small></div><button id="clearComparison" class="text-button">清除</button><button id="compareButton" class="primary-button" disabled>開始比較 →</button></div>
+  <dialog id="compareModal"><div class="modal-heading"><div><div class="eyebrow">SCHOOL COMPARISON</div><h2>學校比較</h2></div><button class="close-modal" aria-label="關閉比較視窗">×</button></div><div id="compareTableContainer"></div></dialog>
+  <dialog id="faqModal"><div class="modal-heading"><div><div class="eyebrow">A LITTLE HELP</div><h2>常見問題</h2></div><button class="close-modal" aria-label="關閉常見問題">×</button></div><details open><summary>如何使用查詢系統？</summary><p>選擇年度，輸入學校名稱或選擇群別與分數門檻，再按「查詢錄取分數」。條件可留空，查看該年度所有資料。</p></details><details><summary>錄取分數怎麼看？</summary><p>A 表示「精熟」、B 表示「基礎」、C 表示「待加強」。例如 4A1B 代表四科精熟、一科基礎；「+」為標示的加號數。歷年分數僅供參考，請以各校當年度招生公告為準。</p></details><details><summary>如何比較學校？</summary><p>按結果旁的「＋」加入比較，可跨年度保留選擇。選取至少兩個項目後，按下方的「開始比較」查看學校、群別、科系與分數。</p></details><details><summary>目前可以查詢哪些年度？</summary><p>目前提供 110 至 113 學年度選項。資料由原有查詢服務提供，若暫時無法載入，可重新查詢。</p></details></dialog>
+  <dialog id="updateNoticeModal" class="update-notice-modal" aria-labelledby="updateNoticeTitle" aria-describedby="updateNoticeDescription">
+    <div class="modal-heading"><div class="eyebrow">SERVICE UPDATE</div><button class="close-modal" aria-label="關閉系統公告">×</button></div>
+    <div class="update-notice-icon" aria-hidden="true">↗</div>
+    <p class="update-notice-label">系統服務公告</p>
+    <h2 id="updateNoticeTitle">此系統將不再更新</h2>
+    <p id="updateNoticeDescription">感謝你一直以來的使用與支持。<br>後續升學查詢與分析服務，請改用<br><strong>「會考落點分析」</strong>。</p>
+    <div class="update-notice-actions"><a class="primary-button" href="https://tyctw.github.io/spare/" autofocus>前往會考落點分析 <span aria-hidden="true">↗</span></a><button class="text-button" id="continueHistorical">繼續查詢歷年資料</button></div>
+  </dialog>
   <script src="app.js"></script>
 </body>
 </html>
